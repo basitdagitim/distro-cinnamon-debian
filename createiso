@@ -146,7 +146,7 @@ if [[ "$FIRMWARE" != "" ]] ; then
     cd $rootfs/tmp
     tar -xvf linux-firmware.tar.gz
     cd linux-firmware-$fwversion
-    ./copy-firmware.sh ../../lib/firmware
+    chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
     cd ../../..
     rm -rf $rootfs/tmp/linux-firmware*
 fi
