@@ -114,7 +114,7 @@ chroot $rootfs /bin/bps -i lightdm-gtk-greeter
 #hroot $rootfs /bin/bps -i lightdm-pardus-greeter
 chroot $rootfs /bin/bps -i libgpg-error
 chroot $rootfs /bin/bps -i live-installer
-
+chroot $rootfs /bin/bps -i rdfind
 #dil ayarını en son yapıyoruz
 chroot $rootfs /bin/bps -i locale-tr
 chroot $rootfs /bin/install-remove-to-do
