@@ -6,7 +6,7 @@ if which apt &>/dev/null && [[ -d /var/lib/dpkg && -d /etc/apt ]] ; then
     apt install xorriso grub-pc-bin grub-efi mtools make python3 dosfstools e2fsprogs squashfs-tools python3-yaml gcc wget curl unzip xz-utils debootstrap git erofs-utils zstd -y
 fi
 
-apt-get install git devscripts equivs -y
+apt-get install rdfind git devscripts equivs -y
 #------------------------------------------------------------------------------------
 rootfs="/root/distro/rootfs"
 distro="/root/distro"
@@ -146,7 +146,8 @@ if [[ "$FIRMWARE" != "" ]] ; then
     cd $rootfs/tmp
     tar -xvf linux-firmware.tar.gz
     cd linux-firmware-$fwversion
-    chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
+    #chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
+    make install DESTDIR=../../lib/firmware
     cd ../../..
     rm -rf $rootfs/tmp/linux-firmware*
 fi
