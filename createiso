@@ -148,6 +148,7 @@ if [[ "$FIRMWARE" != "" ]] ; then
     cd linux-firmware-$fwversion
     #chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
     make install DESTDIR=../../lib/firmware
+    chroot $rootfs depmod -a
     cd ../../..
     rm -rf $rootfs/tmp/linux-firmware*
 fi
