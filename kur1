@@ -171,7 +171,7 @@ chroot /hedef userdel -r live
 chroot /hedef mv /bin/su /bin/su-old
 chroot /hedef /bin/bps -r live-installer
 
-
+chroot /hedef update-grub  || fallback
 
 
 
