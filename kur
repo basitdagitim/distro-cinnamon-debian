@@ -304,6 +304,8 @@ udevadm settle || true
 echo "*********************ek modüller yüklendi ******************************"
 modprobe loop
 modprobe ext4
+/bin/busybox --install -s /bin
+loadkeys trq
 fi
 
 main_menu
