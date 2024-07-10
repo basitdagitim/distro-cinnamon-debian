@@ -190,7 +190,7 @@ mv $distro/filesystem.squashfs $distro/iso/live/filesystem.squashfs
 
 #### Write grub.cfg
 # Timeout for menu
-echo -e "set timeout=0\n"> $distro/iso/boot/grub/grub.cfg
+echo -e "set timeout=10\n"> $distro/iso/boot/grub/grub.cfg
 
 
 # Default boot entry
@@ -204,7 +204,7 @@ echo -e "terminal_output console">> $distro/iso/boot/grub/grub.cfg
 echo -e "terminal_input console">> $distro/iso/boot/grub/grub.cfg
 
 echo 'menuentry "Canli(live) GNU/Linux 64-bit" --class liveiso  {' >> $distro/iso/boot/grub/grub.cfg
-echo '    linux /boot/vmlinuz boot=live init=/sbin/openrc-init net.ifnames=0 biosdevname=0' >> $distro/iso/boot/grub/grub.cfg
+echo '    linux /boot/vmlinuz boot=live init=/sbin/openrc-init net.ifnames=0 biosdevname=0 modprobe.blacklist=amdgpu' >> $distro/iso/boot/grub/grub.cfg
 echo '    initrd /boot/initrd.img' >> $distro/iso/boot/grub/grub.cfg
 echo '}' >> $distro/iso/boot/grub/grub.cfg
 
