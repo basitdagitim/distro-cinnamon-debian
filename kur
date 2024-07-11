@@ -307,6 +307,7 @@ modprobe ext4
 cd /bin/
 ln -s busybox hostname
 cd -
+loadkeys trq
 fi
 
 main_menu
