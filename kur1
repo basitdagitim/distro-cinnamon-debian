@@ -44,7 +44,7 @@ fi
 echo "*********************disk bölümleri silindi ******************************"
 #--------------------------------------------------------------------------------------------
 if [[ "$partitioning" == "true" ]] ; then
-    dd if=/dev/zero of=/dev/${DISK} bs=512 count=1
+#    dd if=/dev/zero of=/dev/${DISK} bs=512 count=1
     sync && sleep 1
     
      if [[ -d /sys/firmware/efi ]] ; then
