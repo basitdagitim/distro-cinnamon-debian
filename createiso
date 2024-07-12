@@ -138,6 +138,8 @@ for grp in users tty wheel cdrom audio dip video plugdev netdev; do
 done
 
 chroot $rootfs /bin/bps -i fw-amd
+chroot $rootfs /bin/bps -i fw-generic
+chroot $rootfs /bin/bps -i fw-ath
 chroot $rootfs depmod -a
 
 # set permissions
