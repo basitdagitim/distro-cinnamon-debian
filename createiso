@@ -42,6 +42,7 @@ echo "basitdagitim/bps-apps">>$rootfs/etc/bps/sources.list
 echo "basitdagitim/x11-bps-binary-packages">>$rootfs/etc/bps/sources.list
 echo "basitdagitim/lxde-bps-binary-packages">>$rootfs/etc/bps/sources.list
 echo "basitdagitim/cinnamon-bps-binary-packages">>$rootfs/etc/bps/sources.list
+echo "basitdagitim/bps-firmware">>$rootfs/etc/bps/sources.list
 echo "anadolulinux/lfs-binary-packages">>$rootfs/etc/bps/sources.list
 
 ### installing bps package in rootfs
@@ -136,27 +137,8 @@ for grp in users tty wheel cdrom audio dip video plugdev netdev; do
     chroot $rootfs usermod -aG $grp live || true
 done
 
-### linux-firmware (optional)
-FIRMWARE="1"
-if [[ "$FIRMWARE" != "" ]] ; then
-    fwsrc_uri="https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/refs/"
-    fwtarball=https://git.kernel.org/$(wget -O - ${fwsrc_uri} 2>/dev/null | sed "s/.tar.gz'.*/.tar.gz/g;s/.*'//g" | grep "^/pub" | sort -V | tail -n 1)
-    fwversion=$(echo $fwtarball | sed "s/.*-//g;s/\..*//g")
-    wget $fwtarball -O $rootfs/tmp/linux-firmware.tar.gz
-    cd $rootfs/tmp
-    tar -xvf linux-firmware.tar.gz
-    cd linux-firmware-$fwversion
-    #chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
-    make install DESTDIR=../../
-    rm -rf $rootfs/lib/firmware/ath*
-    rm -rf $rootfs/lib/firmware/qcom
-    rm -rf $rootfs/lib/firmware/netronome
-   rm -rf $rootfs/lib/firmware/iwl*
-    
-    chroot $rootfs depmod -a
-    cd ../../..
-    rm -rf $rootfs/tmp/linux-firmware*
-fi
+chroot $rootfs /bin/bps -i fw-amd
+chroot $rootfs depmod -a
 
 # set permissions
 #chmod 1777 $rootfs/tmp
