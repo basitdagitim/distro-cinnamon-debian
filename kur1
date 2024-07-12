@@ -48,30 +48,30 @@ if [[ "$partitioning" == "true" ]] ; then
     sync && sleep 1
     
      if [[ -d /sys/firmware/efi ]] ; then
-        yes | parted /dev/${DISK} mktable gpt || fallback
-        yes | parted /dev/${DISK} mkpart primary fat32 1 "100MB" || fallback
-        yes | parted /dev/${DISK} mkpart primary fat32 100MB "100%" || fallback
+        #yes | parted /dev/${DISK} mktable gpt || fallback
+        #yes | parted /dev/${DISK} mkpart primary fat32 1 "100MB" || fallback
+        #yes | parted /dev/${DISK} mkpart primary fat32 100MB "100%" || fallback
         sync && sleep 1
-        yes | mkfs.vfat /dev/${DISKX}1 || fallback
+        yes | mkfs.vfat $installbootpartition || fallback
         sync && sleep 1
-        yes | mkfs.ext4  /dev/${DISKX}2 || fallback
+        yes | mkfs.ext4  $installsystempartition || fallback
         yes | parted /dev/${DISK} set 1 esp on || fallback
         sync && sleep 1
-        mount /dev/${DISKX}2  /hedef || fallback
+        mount $installsystempartition  /hedef || fallback
         mkdir -p /hedef/boot/efi || true
-        mount /dev/${DISKX}1 /hedef/boot/efi  || fallback
+        mount $installbootpartition /hedef/boot/efi  || fallback
     else
-        yes | parted /dev/${DISK} mktable msdos || fallback
-        yes | parted /dev/${DISK} mkpart primary fat32 1 "100%" || fallback
+        #yes | parted /dev/${DISK} mktable msdos || fallback
+        #yes | parted /dev/${DISK} mkpart primary fat32 1 "100%" || fallback
         sync && sleep 1
-        yes |e2fsck -f /dev/${DISK}1
+        yes |e2fsck -f $installsystempartition
         sync && sleep 1
-	yes |tune2fs -O ^metadata_csum /dev/${DISK}1
+	yes |tune2fs -O ^metadata_csum $installsystempartition
 	sync && sleep 1
-        yes | mkfs.ext4  /dev/${DISKX}1 || fallback
+        yes | mkfs.ext4  $installsystempartition || fallback
         yes | parted /dev/${DISK} set 1 esp on || fallback
         sync && sleep 1
-        mount /dev/${DISKX}1  /hedef || fallback
+        mount $installsystempartition  /hedef || fallback
         mkdir -p /hedef/boot
     fi
 else
@@ -112,10 +112,10 @@ sync
 
 if [[ "$partitioning" == "true" ]] ; then
     if [[ -d /sys/firmware/efi ]] ; then
-        echo "/dev/${DISKX}2 /               ext4    errors=remount-ro        0       1" > /hedef/etc/fstab  || fallback
-        echo "/dev/${DISKX}1 /boot/efi       vfat    umask=0077               0       0" >> /hedef/etc/fstab  || fallback
+        echo "${installsystempartition} /               ext4    errors=remount-ro        0       1" > /hedef/etc/fstab  || fallback
+        echo "${installbootpartition}/boot/efi       vfat    umask=0077               0       0" >> /hedef/etc/fstab  || fallback
     else
-        echo "/dev/${DISKX}1 /               ext4    errors=remount-ro        0       1" > /hedef/etc/fstab  || fallback
+        echo "${installsystempartition} /               ext4    errors=remount-ro        0       1" > /hedef/etc/fstab  || fallback
     fi
 else
     echo "Please write fstab file. Press any key to open editor."
@@ -149,7 +149,7 @@ else
 fi
 
 mkdir -p /hedef/boot/grub
-bid=$(blkid /dev/${DISK}1|cut -d' ' -f2|cut -c 7-42)
+bid=$(blkid ${installsystempartition}|cut -d' ' -f2|cut -c 7-42)
 rm -rf /hedef/boot/grub/grub.cfg
 touch /hedef/boot/grub/grub.cfg
 echo "linux /boot/vmlinuz-$(uname -r) init=/sbin/openrc-init root=UUID=${bid} rw quiet">>/hedef/boot/grub/grub.cfg

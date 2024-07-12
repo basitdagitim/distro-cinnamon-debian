@@ -147,7 +147,7 @@ if [[ "$FIRMWARE" != "" ]] ; then
     tar -xvf linux-firmware.tar.gz
     cd linux-firmware-$fwversion
     #chroot $rootfs  /tmp/linux-firmware-$fwversion/copy-firmware.sh ../../lib/firmware
-    make install DESTDIR=../../lib/firmware
+    make install DESTDIR=../../
     chroot $rootfs depmod -a
     cd ../../..
     rm -rf $rootfs/tmp/linux-firmware*
@@ -204,7 +204,7 @@ echo -e "terminal_output console">> $distro/iso/boot/grub/grub.cfg
 echo -e "terminal_input console">> $distro/iso/boot/grub/grub.cfg
 
 echo 'menuentry "Canli(live) GNU/Linux 64-bit" --class liveiso  {' >> $distro/iso/boot/grub/grub.cfg
-echo '    linux /boot/vmlinuz boot=live init=/sbin/openrc-init net.ifnames=0 biosdevname=0 modprobe.blacklist=amdgpu' >> $distro/iso/boot/grub/grub.cfg
+echo '    linux /boot/vmlinuz boot=live init=/sbin/openrc-init net.ifnames=0 biosdevname=0' >> $distro/iso/boot/grub/grub.cfg
 echo '    initrd /boot/initrd.img' >> $distro/iso/boot/grub/grub.cfg
 echo '}' >> $distro/iso/boot/grub/grub.cfg
 
