@@ -278,10 +278,10 @@ main_menu(){
 		    fi
            	#------------------------------------------------------------------------------------------------
            	if [[ -d /sys/firmware/efi ]] ; then
-           		disklabel=$(blkid -s PTTYPE -o value "${dsk}")
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
            	 	if [[ "$disklabel" != "gpt" ]]; then
-     				echo -e "label:gtp"|sfdisk /dev/${DISK}
-     				cfdisk /dev/${dskx}
+     				echo -e "label:gtp"|sfdisk "/dev/${dskx}"
+     				cfdisk "/dev/${dskx}"
      			else
      				if [[ "$installsystempartition" != "$installbootpartition" ]] ; then
 	     				source kur1
@@ -290,10 +290,10 @@ main_menu(){
 				fi
      			fi
            	else
-           		disklabel=$(blkid -s PTTYPE -o value "${dsk}")
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
            	 	if [[ "$disklabel" != "dos" ]]; then
-     				echo -e "label:dos"|sfdisk /dev/${DISK}
-     				cfdisk /dev/${dskx}
+     				echo -e "label:dos"|sfdisk "/dev/${dskx}"
+     				cfdisk "/dev/${dskx}"
      			else
      				if [[ "$installsystempartition" == "$installbootpartition" ]] ; then
      					source kur1
