@@ -43,6 +43,7 @@ fi
 
 echo "*********************disk bölümleri silindi ******************************"
 #--------------------------------------------------------------------------------------------
+
 if [[ "$partitioning" == "true" ]] ; then
 #    dd if=/dev/zero of=/dev/${DISK} bs=512 count=1
     sync && sleep 1
@@ -61,6 +62,7 @@ if [[ "$partitioning" == "true" ]] ; then
         mkdir -p /hedef/boot/efi || true
         mount $installbootpartition /hedef/boot/efi  || fallback
     else
+   
         #yes | parted /dev/${DISK} mktable msdos || fallback
         #yes | parted /dev/${DISK} mkpart primary fat32 1 "100%" || fallback
         sync && sleep 1
