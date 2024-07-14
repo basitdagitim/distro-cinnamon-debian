@@ -200,9 +200,9 @@ uefiuyar(){
 
       dialog --stdout --title "Dikkat!" \
   	--backtitle "install" \
-  	--yesno "Diske  daha önce legacy kurulum yapılmış. \
-  	 \nİşleme devam ederseniz diskteki tüm bilgiler silinecek.\
-  	 \nİşleme devam etmek istiyor musunuz?" 7 60
+  	--yesno "Diske  daha once legacy kurulum yapilmis. \
+  	 \nIsleme devam ederseniz diskteki tum bilgiler silinecek.\
+  	 \nIsleme devam etmek istiyor musunuz?" 7 60
 	
 	operation=$?
 	if [[ "$operation" == "0" ]]; then
@@ -217,9 +217,9 @@ legacyuyar(){
 
       dialog --stdout --title "Dikkat!" \
   	--backtitle "install" \
-  	--yesno "Diske  daha önce uefi kurulum yapılmış. \
-  	 \nİşleme devam ederseniz diskteki tüm bilgiler silinecek.\
-  	 \nİşleme devam etmek istiyor musunuz?" 7 60
+  	--yesno "Diske  daha once uefi kurulum yapilmis. \
+  	 \nIsleme devam ederseniz diskteki tum bilgiler silinecek.\
+  	 \nIsleme devam etmek istiyor musunuz?" 7 60
 	
 	operation=$?
 	if [[ "$operation" == "0" ]]; then
@@ -258,6 +258,8 @@ echo "kuruluma geçildi........"
 	     				source kur1
 					echo "uefi kurulum ........"
 					kurulum
+				else
+					mesaj="boot ve system bolumleri farkli olmali"
 				fi
      			fi
            	else
