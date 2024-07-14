@@ -12,7 +12,7 @@ DISK=${installdisk/*\//}
     fi
  ############################################################
 
-echo "Tek Bolum  Kurulum Yapılacak Disk $DISKX"
+echo "Kurulum Yapılacak Disk $DISKX"
 
 fallback(){
         echo -e "\033[31;1mInstallation failed.\033[;0m"
@@ -28,7 +28,9 @@ if [[ $UID -eq 0 ]] ; then
     mount -t devtmpfs devtmpfs /dev || true
     mount -t proc proc /proc || true
     mount -t sysfs sysfs /sys || true
-    mount -t efivarfs efivars /sys/firmware/efi/efivars || true
+    if [[ -d /sys/firmware/efi ]] ; then
+    	mount -t efivarfs efivars /sys/firmware/efi/efivars || true
+    fi
 fi
 
 mkdir -p hedef
@@ -41,7 +43,7 @@ else
 mount /dev/loop0 /kaynak || true
 fi
 
-echo "*********************disk bölümleri silindi ******************************"
+echo "*********************disk bölümleri biçimlendiriliyor ******************************"
 #--------------------------------------------------------------------------------------------
 
 if [[ "$partitioning" == "true" ]] ; then

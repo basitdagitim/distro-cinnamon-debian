@@ -2,11 +2,11 @@
 installdisk=""
 installbootpartition=""
 installsystempartition=""
-installrootpasswd=""
-installrootpasswdstar=""
-installusername=""
-installuserpasswd=""
-installrootpasswdstar=""
+installrootpasswd="1"
+installrootpasswdstar="****"
+installusername="user1"
+installuserpasswd="1"
+installrootpasswdstar="***"
 installlang="tr_TR"
 installkeyboard="trq"
 mesaj="Ayarlari Secin"
@@ -49,7 +49,10 @@ select_disk_boot_partition_menu(){
 
     while true ;  do
        installbootpartition=/dev/$(TITLE="Select a disk for installation Partition" select_partition)
-       installsystempartition="${installbootpartition}"
+           if [[ ! -d /sys/firmware/efi ]] ; then
+    	       installsystempartition="${installbootpartition}"
+    	   fi
+
        return
     done
 }
@@ -280,7 +283,10 @@ main_menu(){
            	if [[ -d /sys/firmware/efi ]] ; then
            		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
            	 	if [[ "$disklabel" != "gpt" ]]; then
-     				echo -e "label:gtp"|sfdisk "/dev/${dskx}"
+     				echo -e "label:gpt"|sfdisk "/dev/${dskx}"
+     				installsystempartition=""
+     				installbootpartition=""
+     				
      				cfdisk "/dev/${dskx}"
      			else
      				if [[ "$installsystempartition" != "$installbootpartition" ]] ; then
@@ -293,6 +299,9 @@ main_menu(){
            		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
            	 	if [[ "$disklabel" != "dos" ]]; then
      				echo -e "label:dos"|sfdisk "/dev/${dskx}"
+     				installsystempartition=""
+     				installbootpartition=""
+     			
      				cfdisk "/dev/${dskx}"
      			else
      				if [[ "$installsystempartition" == "$installbootpartition" ]] ; then
