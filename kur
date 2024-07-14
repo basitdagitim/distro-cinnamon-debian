@@ -12,6 +12,7 @@ installkeyboard="trq"
 mesaj="Ayarlari Secin"
 DISKX=""
 DISK=""
+result=""
 emptyfieldcheck()
 {
 if [ -z "${installdisk}" ];then
@@ -286,6 +287,7 @@ echo "kuruluma geçildi........"
 ###### Main Menu ######
 main_menu(){
      while true ; do
+     if [[ -d /sys/firmware/efi ]] ; then
         result=$(dialog --no-cancel \
         --backtitle "$mesaj"\
             --output-fd 1 --menu \
@@ -306,6 +308,28 @@ main_menu(){
             "l" "Start in Live Mode" \
             "r" "Reboot"
         )
+       else
+        result=$(dialog --no-cancel \
+        --backtitle "$mesaj"\
+            --output-fd 1 --menu \
+            "Install Menu" 0 0 0 \
+            "1" "Select Disk		( $installdisk )" \
+            "2" "Create / Modify Partition" \
+            "3" "Select Partition	( $installbootpartition )" \
+            "5" "Set root Password	( $installrootpasswdstar )" \
+            "6" "Set Username 		( $installusername )" \
+            "7" "Set User Password 	( $installuserpasswdstar )" \
+            "8" "Set Language	 	( $installlang )" \
+	    "9" "Set Keyboard	 	( $installkeyboard )" \
+            "i" "Install" \
+            "" "                      " \
+            "t" "Run Terminal" \
+            "" "                      " \
+            "l" "Start in Live Mode" \
+            "r" "Reboot"
+        )
+       fi
+        
          echo -ne "\033c"
         if [[ "$result" == "r" ]] ; then
            reboot -f
