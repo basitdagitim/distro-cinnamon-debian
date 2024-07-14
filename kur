@@ -6,7 +6,7 @@ installrootpasswd="1"
 installrootpasswdstar="****"
 installusername="user1"
 installuserpasswd="1"
-installrootpasswdstar="***"
+installuserpasswdstar="****"
 installlang="tr_TR"
 installkeyboard="trq"
 mesaj="Ayarlari Secin"
@@ -195,6 +195,92 @@ start_live(){
     exec /sbin/openrc-init
 
 }
+
+uefiuyar(){
+
+      dialog --stdout --title "Dikkat!" \
+  	--backtitle "install" \
+  	--yesno "Diske  daha önce legacy kurulum yapılmış. \
+  	 \nİşleme devam ederseniz diskteki tüm bilgiler silinecek.\
+  	 \nİşleme devam etmek istiyor musunuz?" 7 60
+	
+	operation=$?
+	if [[ "$operation" == "0" ]]; then
+		result="yes"
+	else
+		result="no"
+	fi
+	echo $result
+}
+
+legacyuyar(){
+
+      dialog --stdout --title "Dikkat!" \
+  	--backtitle "install" \
+  	--yesno "Diske  daha önce uefi kurulum yapılmış. \
+  	 \nİşleme devam ederseniz diskteki tüm bilgiler silinecek.\
+  	 \nİşleme devam etmek istiyor musunuz?" 7 60
+	
+	operation=$?
+	if [[ "$operation" == "0" ]]; then
+		result="yes"
+	else
+		result="no"
+	fi
+	echo $result
+}
+yukle()
+{
+echo "kuruluma geçildi........"
+           	#------------------------------------------------------------------------------------------------
+		   dsk=${installdisk/*\//}
+		   dskx=""
+		   #########################################################
+		   if echo ${dsk} | grep nvme ; then
+			dskx=${dsk}p
+		   else
+			dskx=${dsk}
+		    fi
+           	#------------------------------------------------------------------------------------------------
+           	if [[ -d /sys/firmware/efi ]] ; then
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
+           	 	if [[ "$disklabel" != "gpt" ]]; then
+           	 	
+		   	 	if [[ "$(uefiuyar)" == "yes" ]]; then
+					echo -e "label:gpt"|sfdisk "/dev/${dskx}"
+	     				installsystempartition=""
+	     				installbootpartition=""
+	     				cfdisk "/dev/${dskx}"
+				fi
+     				
+     			else
+     				if [[ "$installsystempartition" != "$installbootpartition" ]] ; then
+	     				source kur1
+					echo "uefi kurulum ........"
+					kurulum
+				fi
+     			fi
+           	else
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
+           	 	if [[ "$disklabel" != "dos" ]]; then
+           	 		if [[ "$(legacyuyar)" == "yes" ]]; then
+					echo -e "label:dos"|sfdisk "/dev/${dskx}"
+     					installsystempartition=""
+     					installbootpartition=""
+     					cfdisk "/dev/${dskx}"
+				fi
+     			else
+     				if [[ "$installsystempartition" == "$installbootpartition" ]] ; then
+     					source kur1
+					echo "legacy kurulum ........"
+					kurulum
+				fi
+     			fi
+           	fi
+           	
+
+           	
+}
 ###### Main Menu ######
 main_menu(){
      while true ; do
@@ -263,57 +349,10 @@ main_menu(){
             installkeyboard=""
 	   set_keyboard
         elif [[ "$result" == "i" ]] ; then
-            #start_openrc
-
-           durum=$(emptyfieldcheck)
-                       mesaj="$durum"
+           durum=$(emptyfieldcheck)                       
+           mesaj="$durum"
            if [[ "$durum" == "2" ]] ; then
-           
-           	echo "kuruluma geçildi........"
-           	#------------------------------------------------------------------------------------------------
-		   dsk=${installdisk/*\//}
-		   dskx=""
-		   #########################################################
-		   if echo ${dsk} | grep nvme ; then
-			dskx=${dsk}p
-		   else
-			dskx=${dsk}
-		    fi
-           	#------------------------------------------------------------------------------------------------
-           	if [[ -d /sys/firmware/efi ]] ; then
-           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
-           	 	if [[ "$disklabel" != "gpt" ]]; then
-     				echo -e "label:gpt"|sfdisk "/dev/${dskx}"
-     				installsystempartition=""
-     				installbootpartition=""
-     				
-     				cfdisk "/dev/${dskx}"
-     			else
-     				if [[ "$installsystempartition" != "$installbootpartition" ]] ; then
-	     				source kur1
-					echo "uefi kurulum ........"
-					kurulum
-				fi
-     			fi
-           	else
-           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
-           	 	if [[ "$disklabel" != "dos" ]]; then
-     				echo -e "label:dos"|sfdisk "/dev/${dskx}"
-     				installsystempartition=""
-     				installbootpartition=""
-     			
-     				cfdisk "/dev/${dskx}"
-     			else
-     				if [[ "$installsystempartition" == "$installbootpartition" ]] ; then
-     					source kur1
-					echo "legacy kurulum ........"
-					kurulum
-				fi
-     			fi
-           	fi
-           	
-
-           	
+           	yukle
            fi
         elif [[ "$result" == "t" ]] ; then
            echo -e "\033[33;1mTerminal mode. You can type exit and go back.\033[;0m"
