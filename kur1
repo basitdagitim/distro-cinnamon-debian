@@ -12,7 +12,7 @@ DISK=${installdisk/*\//}
     fi
  ############################################################
 
-echo "Kurulum Yapılacak Disk $DISKX"
+echo "Kurulum Yapılacak Disk $DISK"
 
 fallback(){
         echo -e "\033[31;1mInstallation failed.\033[;0m"

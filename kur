@@ -13,6 +13,9 @@ mesaj="Ayarlari Secin"
 DISKX=""
 DISK=""
 result=""
+dsk=""
+dskx=""
+
 emptyfieldcheck()
 {
 if [ -z "${installdisk}" ];then
@@ -234,24 +237,15 @@ yukle()
 {
 echo "kuruluma geçildi........"
            	#------------------------------------------------------------------------------------------------
-		   dsk=${installdisk/*\//}
-		   dskx=""
-		   #########################################################
-		   if echo ${dsk} | grep nvme ; then
-			dskx=${dsk}p
-		   else
-			dskx=${dsk}
-		    fi
-           	#------------------------------------------------------------------------------------------------
            	if [[ -d /sys/firmware/efi ]] ; then
-           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dsk}")
            	 	if [[ "$disklabel" != "gpt" ]]; then
            	 	
 		   	 	if [[ "$(uefiuyar)" == "yes" ]]; then
-					echo -e "label:gpt"|sfdisk "/dev/${dskx}"
+					echo -e "label:gpt"|sfdisk "/dev/${dsk}"
 	     				installsystempartition=""
 	     				installbootpartition=""
-	     				cfdisk "/dev/${dskx}"
+	     				cfdisk "/dev/${dsk}"
 				fi
      				
      			else
@@ -264,13 +258,13 @@ echo "kuruluma geçildi........"
 				fi
      			fi
            	else
-           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dskx}")
+           		disklabel=$(blkid -s PTTYPE -o value "/dev/${dsk}")
            	 	if [[ "$disklabel" != "dos" ]]; then
            	 		if [[ "$(legacyuyar)" == "yes" ]]; then
-					echo -e "label:dos"|sfdisk "/dev/${dskx}"
+					echo -e "label:dos"|sfdisk "/dev/${dsk}"
      					installsystempartition=""
      					installbootpartition=""
-     					cfdisk "/dev/${dskx}"
+     					cfdisk "/dev/${dsk}"
 				fi
      			else
      				if [[ "$installsystempartition" == "$installbootpartition" ]] ; then
@@ -336,20 +330,22 @@ main_menu(){
             echo "reboot"
         elif [[ $result -eq 1 ]] ; then
            select_disk_menu
-        elif [[ $result -eq 2 ]] ; then
-            cfdisk $installdisk
-        elif [[ $result -eq 3 ]] ; then
+           #--------------------------------NVME--------------------------------------------
             dsk=${installdisk/*\//}
-            dskx=""
-	    #########################################################
 	    if echo ${dsk} | grep nvme ; then
 		dskx=${dsk}p
 	    else
 		dskx=${dsk}
 	    fi
-	
-            if [ ! -d "/sys/block/$dskx/${dskx}1" ] ; then
-            	  cfdisk /dev/${dskx}
+	    #----------------------------------------------------------------------------
+        elif [[ $result -eq 2 ]] ; then
+            cfdisk $installdisk
+        elif [[ $result -eq 3 ]] ; then
+           
+
+	exit
+            if [ ! -d "/sys/block/$dsk/${dskx}1" ] ; then
+            	  cfdisk /dev/${dsk}
             else
             	select_disk_boot_partition_menu
             fi
