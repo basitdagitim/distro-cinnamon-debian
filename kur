@@ -342,8 +342,6 @@ main_menu(){
             cfdisk $installdisk
         elif [[ $result -eq 3 ]] ; then
            
-
-	exit
             if [ ! -d "/sys/block/$dsk/${dskx}1" ] ; then
             	  cfdisk /dev/${dsk}
             else

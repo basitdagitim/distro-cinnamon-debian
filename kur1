@@ -73,7 +73,7 @@ if [[ "$partitioning" == "true" ]] ; then
 	yes |tune2fs -O ^metadata_csum $installsystempartition
 	sync && sleep 1
         yes | mkfs.ext4  $installsystempartition || fallback
-        yes | parted /dev/${DISK} set 1 esp on || fallback
+        yes | parted /dev/${DISK} set 1 boot on || fallback
         sync && sleep 1
         mount $installsystempartition  /hedef || fallback
         mkdir -p /hedef/boot
